@@ -1,4 +1,3 @@
-const mysql = require("mysql");
 const db = require('../Configuration/index.js')
 
 //add new seat
@@ -33,7 +32,6 @@ const deleteAllSeats = () => {
     });
 };
 
-const db = require("../Configuration/index.js");
 const addNewEvent = (
   homeTeam,
   awayTeam,
