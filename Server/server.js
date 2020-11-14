@@ -27,4 +27,5 @@ app.use(bodyParser.urlencoded({extended: true}));
 // app.use('/purchase',purchase)
 app.use('/seats',seats)
 
+
 app.listen(port,()=>{console.log(`Connected to ${port}`)})
