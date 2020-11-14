@@ -12,5 +12,9 @@ function genHash(salt, password) {
     // the function needs to be async!!
     return bcrypt.hash(password, salt)
 }
+
+module.exports = {
+    genHash
+}
   
 

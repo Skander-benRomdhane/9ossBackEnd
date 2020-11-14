@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("../../../Database/Controller/events.js");
 const router = express.Router();
 
+// requests to tickets route
 
 router.get("/", async (req, res) => {
    await db.getAllEvents({})
@@ -9,7 +10,7 @@ router.get("/", async (req, res) => {
        res.json(data);
    })
    .catch(error=>{
-       console.log(error);
+       res.send(error)
    })
   });
   
@@ -23,4 +24,3 @@ router.get("/", async (req, res) => {
 
 
 module.exports = router;
-// requests to tickets route
