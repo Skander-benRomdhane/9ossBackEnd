@@ -69,5 +69,6 @@ CREATE TABLE tickets(
 );
 
 INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','elyes123','102031020','url:image/profile.jpg')
+INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship')
 
 
