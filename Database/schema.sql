@@ -68,4 +68,6 @@ CREATE TABLE tickets(
     CONSTRAINT FK_seatID FOREIGN KEY (seat_id) References seats(id)
 );
 
+INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship')
+
 
