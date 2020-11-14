@@ -19,7 +19,7 @@ router.post('/add', async (req, res) => {
         })
 });
 
-<
+
 router.post('/newSeats', async (req, res) => {
     let type = req.body.type;
     let number = req.body.Number;
