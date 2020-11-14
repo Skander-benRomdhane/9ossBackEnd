@@ -13,7 +13,7 @@ CREATE TABLE users(
     email varchar(50),
     password varchar(20) NOT NULL,
     phoneNumber REAL NOT NULL,
-    profileImage varchar(20) NOT NULL,
+    profileImage varchar(100) NOT NULL,
     PRIMARY KEY (ID)
 );
 
@@ -67,5 +67,7 @@ CREATE TABLE tickets(
     CONSTRAINT FK_purchaseID FOREIGN KEY (purchase_id) References purchases(id),
     CONSTRAINT FK_seatID FOREIGN KEY (seat_id) References seats(id)
 );
+
+INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','elyes123','102031020','url:image/profile.jpg')
 
 
