@@ -6,23 +6,23 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
     await db.getAllSeats({})
-    .then(data => {
-        res.json(data);
-    })
-    .catch(error=>{
-        console.log(error);
-    })
-   });
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+});
 
 
-router.put("/seats", async (req,res)=>{
+router.put("/seats", async (req, res) => {
     await db.updateSeatAvailability(req.body)
-    .then(results =>{
-        res.json(results)
-    })
-    .catch(error=>{
-        console.log(error)
-    })
+        .then(results => {
+            res.json(results)
+        })
+        .catch(error => {
+            console.log(error)
+        })
 })
 
 module.exports = router;
