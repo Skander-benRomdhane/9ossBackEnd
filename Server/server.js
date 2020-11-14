@@ -19,10 +19,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // middlwares
 
-app.use('/events',events)
+
 // app.use('/users', users);
-app.use('/admins', admins);
+// app.use('/admins', admins);
 // app.use('/tickets',tickets)
+// app.use('/events',events)
 // app.use('/purchase',purchase)
 
 app.listen(port,()=>{console.log(`Connected to ${port}`)})
