@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -12,7 +11,7 @@ const users = require('./Routes/Users/users.js')
 // const purchase = require('./Routes/Purchase/purchase.js')
 const events = require('./Routes/Events/events.js')
 const admins = require('./Routes/Admins/admins.js')
-const seats = require('./Routes/Seats/seats.js')
+const seats = require('./Routes/Seats/seats.js');
 
 app.use(cors());
 app.use(bodyParser.json())
@@ -20,8 +19,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 // middlwares
-const a = process.env.ACCESS_TOKEN_SECRET
-console.log(a)
 app.use('/users', users);
 app.use('/admins', admins);
 // app.use('/tickets',tickets)

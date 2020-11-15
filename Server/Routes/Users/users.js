@@ -1,3 +1,4 @@
+const process = require('../../secrets.js')
 const express = require("express");
 const db = require("../../../Database/Controller/users.js");
 const router = express.Router();
@@ -5,11 +6,10 @@ const Auth = require('../Auth-Hash/authToken.js');
 const Joi = require('joi');
 const { genSalt } = require('../Auth-Hash/salt.js');
 const { genHash } = require('../Auth-Hash/hash.js');
-const client = require('twilio')('ACedb07b5f704eea898d89c689ead49e01', '6562d2669b1ce4edcfb91afd7dd25eca');
 const mail = require('./email.js');
 const { jwt } = require('twilio');
 const bcrypt = require('bcrypt');
-const { json } = require('body-parser');
+const Nexmo = require('nexmo');
 
 
 ////////////////////////////////////// joi schema //////////////////////////////////////////
@@ -29,7 +29,6 @@ const schema = Joi.object().keys({
 router.post("/signup", async (req, res) => {
     // check if user informations exists
     const phoneExists = await db.getOneUser(req.body.phoneNumber);
-    console.log(phoneExists)
     if (phoneExists.length > 0) return res.json({ message: "User already exists" });
     if (req.body.code === `${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)}`) {
         try {
@@ -40,7 +39,9 @@ router.post("/signup", async (req, res) => {
             req.body.password = hashedPassword;
             const { error } = await schema.validateAsync(req.body);
             const registredUser = await db.addUser(req.body);
-            mail.sendEmail(req.body.firstName, req.body.password)
+            if (req.body.email) {
+                mail.sendEmail(req.body.firstName, req.body.email)
+            }
             res.json(registredUser);
 
         } catch (error) {
@@ -52,13 +53,17 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/verify", async (req, res) => {
-    //sending a verification SMS
-    client.messages.create({
-        to: `${req.body.phoneNumber}`,
-        from: '+2160001110',
-        body: `Your verification code is : ${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)}`
-    })
-    res.status(200).json('SMS sent!')
+    const nexmo = new Nexmo({
+        apiKey: process.apiKey,
+        apiSecret: process.apiSecret,
+    });
+
+    const from = '9ossNet';
+    const to = `216${req.body.phoneNumber}`;
+    const text = `Your verification code is : ${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)} `;
+
+    nexmo.message.sendSms(from, to, text);
+    res.json('SMS Sent!')
 })
 
 ////////////////////////////////////////// Sign Up End //////////////////////////////////////////
@@ -67,7 +72,7 @@ router.post("/verify", async (req, res) => {
 
 
 router.post('/signin', async (req, res) => {
-    console.log(process.env.ACCESS_TOKEN_SECRET)
+    console.log(process.ACCESS_TOKEN_SECRET)
     const phone = req.body.phoneNumber;
     try {
         // const { error } = await loginschema.validateAsync(req.body);
@@ -75,19 +80,17 @@ router.post('/signin', async (req, res) => {
         if (!user) return res.json({});
         //check password
         const validPass = await bcrypt.compare(req.body.password, user[0].password)
-        console.log(validPass)
-        if (validPass === false){
+        if (validPass === false) {
             return res.json({});
-        }else{
-        //create and assign a token
-        const Token = process.env.ACCESS_TOKEN_SECRET;
-        const accessToken = Auth.accessToken(req.body.phoneNumber, Token);
-        const refToken = process.env.ACCESS_TOKEN_REFRESH;
-        const refreshToken = Auth.refreshToken(req.body.phoneNumber, refToken)
-        const UserToken = db.addRefreshToken(refreshToken, req.body.phoneNumber);
-        console.log(accessToken,refreshToken)
-        res.json({ accessToken, refreshToken })
-    }
+        } else {
+            //create and assign a token
+            const Token = process.ACCESS_TOKEN_SECRET;
+            const accessToken = Auth.accessToken(req.body.phoneNumber, Token);
+            const refToken = process.REFRESH_TOKEN_SECRET;
+            const refreshToken = Auth.refreshToken(req.body.phoneNumber, refToken)
+            const UserToken = db.addRefreshToken(refreshToken, req.body.phoneNumber);
+            res.json({ accessToken, refreshToken })
+        }
     } catch (error) {
         if (error.isJoi === true) res.status(500).json(error.details[0].message);
     }
@@ -103,9 +106,9 @@ router.post('/token', async (req, res) => {
     if (refreshTokens == null) return res.send(401)
     const tokenCheck = await db.getRefreshToken(refreshTokens)
     if (!tokenCheck.includes(refreshToken)) return res.sendStatus(403)
-    jwt.verify(refreshTokens, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    jwt.verify(refreshTokens, process.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
-        const accesToken = Auth.accessToken(user.phoneNumber, process.env.ACCESS_TOKEN_SECRET)
+        const accesToken = Auth.accessToken(user.phoneNumber, process.ACCESS_TOKEN_SECRET)
         res.json({ accesToken })
     })
 })
