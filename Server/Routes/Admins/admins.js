@@ -67,5 +67,43 @@ router.put("/change", async (req, res) => {
             console.log(error)
         })
 })
-// requests to tickets route
+
+// admin sign up
+
+router.post("/signup", async (req, res) => {
+    // check if user informations exists
+    const emailExists = await db.getOneAdmin(req.body.email);
+    if (emailExists.length > 0) return res.json({ message: "Admin already exists" });
+    try {
+        //hash password
+        const salt = await genSalt();
+        const hashedPassword = await genHash(salt, req.body.password);
+        // add the new User
+        req.body.password = hashedPassword;
+        const registredUser = await db.addAdmin(req.body);
+        res.json(registredUser);
+    } catch (error) {
+        if (error.isJoi === true) res.status(500).json(error.details[0].message);
+    }
+});
+
+// admin log in
+
+router.post('/signin', async (req, res) => {
+    try {
+        const admin = await db.getOneAdmin(req.body.email);
+        if (!admin) return res.json({});
+        //check password
+        const validPass = await bcrypt.compare(req.body.password, admin[0].password)
+        console.log(validPass)
+        if (validPass === false) {
+            return res.json({});
+        } else {
+            res.status(200).json('Logged In')
+        }
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 module.exports = router;

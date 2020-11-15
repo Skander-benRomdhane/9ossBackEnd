@@ -17,6 +17,17 @@ CREATE TABLE users(
     PRIMARY KEY (ID)
 );
 
+/* admins table */
+
+CREATE TABLE admins(
+    id int NOT NULL AUTO_INCREMENT,
+    firstName varchar(20) NOT NULL,
+    lastName varchar(20) NOT NULL,
+    email varchar(50),
+    password varchar(220) NOT NULL,
+    PRIMARY KEY (ID)
+);
+
 /* events table */
 
 CREATE TABLE events (

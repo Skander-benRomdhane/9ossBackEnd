@@ -1,5 +1,5 @@
+require('dotenv').config();
 const express = require('express');
-
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors')
@@ -20,13 +20,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 // middlwares
-
+const a = process.env.ACCESS_TOKEN_SECRET
+console.log(a)
 app.use('/users', users);
 app.use('/admins', admins);
 // app.use('/tickets',tickets)
 app.use('/events', events)
 // app.use('/purchase',purchase)
 app.use('/seats',seats)
-
 
 app.listen(port,()=>{console.log(`Connected to ${port}`)})

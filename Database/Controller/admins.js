@@ -2,34 +2,34 @@ const db = require('../Configuration/index.js')
 
 //add new seat
 const addNewSeat = (
-    type,
-    Number,
-    availability
+  type,
+  Number,
+  availability
 ) => {
-    return new Promise((resolve, reject) => {
-        let syntax = `INSERT INTO seats(type,Number,availability) VALUES('${type}','${Number}','${availability}')`;
-        db.connection.query(syntax, (error, results) => {
-            if (error) {
-                return reject(error);
-            } else {
-                return resolve(results);
-            }
-        });
+  return new Promise((resolve, reject) => {
+    let syntax = `INSERT INTO seats(type,Number,availability) VALUES('${type}','${Number}','${availability}')`;
+    db.connection.query(syntax, (error, results) => {
+      if (error) {
+        return reject(error);
+      } else {
+        return resolve(results);
+      }
     });
+  });
 };
 
 //delete all seats
 const deleteAllSeats = () => {
-    let syntax = `DELETE FROM seats`;
-    return new Promise((resolve, reject) => {
-        db.connection.query(syntax, (error, results) => {
-            if (error) {
-                return reject(error);
-            } else {
-                return resolve(results);
-            }
-        });
+  let syntax = `DELETE FROM seats`;
+  return new Promise((resolve, reject) => {
+    db.connection.query(syntax, (error, results) => {
+      if (error) {
+        return reject(error);
+      } else {
+        return resolve(results);
+      }
     });
+  });
 };
 
 const addNewEvent = (
@@ -73,24 +73,61 @@ SET description = '${info.description}',
  date = '${info.date}',
 WHERE id = '${id}'`;
 
-return new Promise((resolve, reject) => {
-  db.connection.query(syntax, (error, results) =>{
-    if (error){
-       reject(error);
-    }
+  return new Promise((resolve, reject) => {
+    db.connection.query(syntax, (error, results) => {
+      if (error) {
+        reject(error);
+      }
 
-    else{
-       resolve(results);
-    }
+      else {
+        resolve(results);
+      }
+    })
   })
-})
-}
+};
 
+// add new admin
+
+const addAdmin = (info) => {
+  let syntax = `INSERT INTO admins(firstName,lastName,email,password) VALUES(${info.firstName},${info.lastName},${info.email},${info.password}) ;`;
+
+  return new Promise((resolve, reject) => {
+    db.connection.query(syntax, (error, results) => {
+      if (error) {
+        reject(error);
+      }
+
+      else {
+        resolve(results);
+      }
+    })
+  })
+};
+
+// get admin by email
+
+const getOneAdmin = (email) => {
+  let syntax = `SELECT * FROM admins WHERE email = '${email}' ;`;
+
+  return new Promise((resolve, reject) => {
+    db.connection.query(syntax, (error, results) => {
+      if (error) {
+        reject(error);
+      }
+
+      else {
+        resolve(results);
+      }
+    })
+  })
+};
 
 module.exports = {
   addNewEvent,
   deleteAllEvents,
   updateEventInfo,
   addNewSeat,
-  deleteAllSeats
+  deleteAllSeats,
+  addAdmin,
+  getOneAdmin
 };

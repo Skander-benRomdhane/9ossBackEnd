@@ -33,9 +33,9 @@ const getOneUser = (phoneNumber) => {
 
 // check a registred User informations
 
-const checkUser = (phoneNumber, password) => {
+const checkUser = (phoneNumber) => {
     return new Promise((resolve, reject) => {
-        let syntax = `SELECT firstName from users WHERE phoneNumber = ${phoneNumber} AND password = ${password};`;
+        let syntax = `SELECT * from users WHERE phoneNumber = '${phoneNumber}';`;
         db.connection.query(syntax, (err, row) => {
             if (err) {
                 reject(err)
@@ -76,6 +76,21 @@ const getRefreshToken = (token) => {
     })
 };
 
+// delete a user refresh token
+
+const deleteUserToken = (token) => {
+    return new Promise((resolve, reject) => {
+        let syntax = `DELETE FROM tokens token = '${token}';`;
+        db.connection.query(syntax, (err, row) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(row)
+            }
+        })
+    })
+};
+
 // exporting the methods
 
 module.exports = {
@@ -83,5 +98,6 @@ module.exports = {
     getOneUser,
     checkUser,
     addRefreshToken,
-    getRefreshToken
+    getRefreshToken,
+    deleteUserToken
 };
