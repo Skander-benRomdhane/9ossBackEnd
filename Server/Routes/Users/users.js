@@ -1,16 +1,17 @@
+require('dotenv').config();
 const express = require("express");
 const db = require("../../../Database/Controller/users.js");
 const router = express.Router();
+const Auth = require('../Auth-Hash/authToken.js');
 const Joi = require('joi');
 const { genSalt } = require('../Auth-Hash/salt.js');
 const { genHash } = require('../Auth-Hash/hash.js');
 const client = require('twilio')('ACedb07b5f704eea898d89c689ead49e01', '6562d2669b1ce4edcfb91afd7dd25eca');
 const mail = require('./email.js');
+const { jwt } = require('twilio');
 
 
-////////////////////////////////////////// Sign Up //////////////////////////////////////////
-
-// joi schema
+////////////////////////////////////// joi schema //////////////////////////////////////////
 
 const schema = Joi.object().keys({
     firstName: Joi.string().required(),
@@ -21,7 +22,7 @@ const schema = Joi.object().keys({
     profileImage: Joi.string().allow('').optional()
 })
 
-// creating a new user account
+////////////////////////////////////////// Sign Up //////////////////////////////////////////
 
 router.post("/add", async (req, res) => {
     // check if user informations exists
@@ -29,7 +30,7 @@ router.post("/add", async (req, res) => {
     const phoneExists = await db.getOneUser(req.body.phoneNumber);
     console.log(phoneExists)
     if (phoneExists.length > 0) return res.json({ message: "User already exists" });
-    if (req.body.code === `${req.body.firstName[0].charCodeAt(0)}${req.body.firstName[0].charCodeAt(1)}`) {
+    if (req.body.code === `${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)}`) {
         try {
             //hash password
             const salt = await genSalt();
@@ -39,12 +40,13 @@ router.post("/add", async (req, res) => {
             const { error } = await schema.validateAsync(req.body);
             const registredUser = await db.addUser(req.body);
             mail.sendEmail(req.body.firstName, req.body.password)
-            res.send(registredUser);
+            res.json(registredUser);
+
         } catch (error) {
             if (error.isJoi === true) res.status(500).json(error.details[0].message);
             next(error);
         }
-    }else{
+    } else {
         res.status(401).send('Code is not valid')
     }
 });
@@ -52,9 +54,9 @@ router.post("/add", async (req, res) => {
 router.post("/verify", async (req, res) => {
     //sending a verification SMS
     client.messages.create({
-        to: '+21693583776',
+        to: `${req.body.phoneNumber}`,
         from: '+2160001110',
-        body: `Your verification code is : ${req.body.firstName[0].charCodeAt(0)}${req.body.firstName[0].charCodeAt(1)}`
+        body: `Your verification code is : ${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)}`
     })
     res.status(200).json('SMS sent!')
 })
@@ -70,7 +72,13 @@ router.post('/signin', async (req, res) => {
 
     await db.checkUser(phone, password)
         .then((data) => {
-            res.status(200).json(data)
+            res.status(200).json(data);
+            const Token = process.env.ACCESS_TOKEN_SECRET;
+            const accessToken = Auth.accessToken(req.body.phoneNumber, Token);
+            const refToken = process.env.ACCESS_TOKEN_REFRESH;
+            const refreshToken = Auth.refreshToken(req.body.phoneNumber, refToken)
+            const UserToken = db.addRefreshToken(refreshToken,req.body.phoneNumber);
+            res.json({ accessToken, refreshToken })
         })
         .catch((error) => {
             res.status(500).json(error)
@@ -78,5 +86,31 @@ router.post('/signin', async (req, res) => {
 })
 
 ///////////////////////////////////////// Log In End /////////////////////////////////////////
+
+///////////////////////////////////////// Refresh Token Post /////////////////////////////////////////
+
+router.post('/token', async (req, res) => {
+    const refreshTokens = req.body.token
+    if (refreshTokens == null) return res.send(401)
+    const tokenCheck = await db.getRefreshToken(refreshTokens)
+    if (!tokenCheck.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshTokens, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        const accesToken = Auth.accessToken(user.phoneNumber, process.env.ACCESS_TOKEN_SECRET)
+        res.json({ accesToken })
+    })
+})
+
+///////////////////////////////////////// Refresh Token End /////////////////////////////////////////
+
+///////////////////////////////////////// Log Out And Delete Token  ////////////////////////////////
+
+router.delete('/logout', (req, res) => {
+    tokenCheck = tokenCheck.filter(token => token !== req.body.token)
+    res.sendStatus(204)
+})
+
+///////////////////////////////////// Log Out And Delete Token End  ////////////////////////////////
+
 
 module.exports = router;

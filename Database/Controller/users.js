@@ -33,7 +33,7 @@ const getOneUser = (phoneNumber) => {
 
 // check a registred User informations
 
-const checkUser = (phoneNumber,password) => {
+const checkUser = (phoneNumber, password) => {
     return new Promise((resolve, reject) => {
         let syntax = `SELECT firstName from users WHERE phoneNumber = ${phoneNumber} AND password = ${password};`;
         db.connection.query(syntax, (err, row) => {
@@ -46,12 +46,42 @@ const checkUser = (phoneNumber,password) => {
     });
 };
 
+// add a refresh token to user
 
+const addRefreshToken = (token,phoneNumber) => {
+    return new Promise((resolve, reject) => {
+        let syntax = `INSERT INTO tokens(token,id-user) VALUES(${token},(SELECT id FROM users WHERE phoneNumber = ${phoneNumber}));`;
+        db.connection.query(syntax, (err, row) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(row)
+            }
+        })
+    })
+};
+
+// get a user refresh token
+
+const getRefreshToken = (token) => {
+    return new Promise((resolve, reject) => {
+        let syntax = `SELECT * FROM tokens WHERE token = ${token};`;
+        db.connection.query(syntax, (err, row) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(row)
+            }
+        })
+    })
+};
 
 // exporting the methods
 
 module.exports = {
     addUser,
     getOneUser,
-    checkUser
+    checkUser,
+    addRefreshToken,
+    getRefreshToken
 };

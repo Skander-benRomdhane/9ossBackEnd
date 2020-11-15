@@ -68,6 +68,17 @@ CREATE TABLE tickets(
     CONSTRAINT FK_seatID FOREIGN KEY (seat_id) References seats(id)
 );
 
+/* Refresh Tokens */
+
+CREATE TABLE tokens(
+    id int NOT NULL AUTO_INCREMENT,
+    token varchar(220) NOT NULL,
+    id_user  int NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_useID FOREIGN KEY (id_user) References users(id)
+
+);
+
 INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','elyes123','102031020','url:image/profile.jpg');
 INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship')
 
