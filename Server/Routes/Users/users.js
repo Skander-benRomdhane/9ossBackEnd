@@ -60,7 +60,7 @@ router.post("/verify", async (req, res) => {
 
     const from = '9ossNet';
     const to = `216${req.body.phoneNumber}`;
-    const text = `Your verification code is : ${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)} `;
+    const text = `${req.body.firstName}, Your verification code is : ${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)} `;
 
     nexmo.message.sendSms(from, to, text);
     res.json('SMS Sent!')
@@ -89,6 +89,7 @@ router.post('/signin', async (req, res) => {
             const refToken = process.REFRESH_TOKEN_SECRET;
             const refreshToken = Auth.refreshToken(req.body.phoneNumber, refToken)
             const UserToken = db.addRefreshToken(refreshToken, req.body.phoneNumber);
+            // getting the history of the user from  database and send it to user profile
             res.json({ accessToken, refreshToken })
         }
     } catch (error) {

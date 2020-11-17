@@ -8,7 +8,7 @@ const port = 5000;
 
 const users = require('./Routes/Users/users.js')
 // const tickets = require('./Routes/Tickets/tickets.js')
-// const purchase = require('./Routes/Purchase/purchase.js')
+const purchase = require('./Routes/Purchase/purchase.js')
 const events = require('./Routes/Events/events.js')
 const admins = require('./Routes/Admins/admins.js')
 const seats = require('./Routes/Seats/seats.js');
@@ -23,7 +23,7 @@ app.use('/users', users);
 app.use('/admins', admins);
 // app.use('/tickets',tickets)
 app.use('/events', events)
-// app.use('/purchase',purchase)
+app.use('/purchase',purchase)
 app.use('/seats',seats)
 
 app.listen(port,()=>{console.log(`Connected to ${port}`)})

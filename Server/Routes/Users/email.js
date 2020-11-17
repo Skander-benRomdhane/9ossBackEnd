@@ -5,19 +5,18 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'write user gmail',
-        pass: 'write user password'
+        user: 'kossnet@hotmail.com',
+        pass: '9ossnet2020'
     }
 })
 
 const sendEmail = (name,email) =>{
     const mailOptions = {
-        from: 'write user gmail',
+        from: 'kossnet@hotmail.com',
         to: `${email}`,
         subject: 'welcome to 9ossNet',
-        text: `Mr/Mrs ${name}, we are pleased to have you in our platform,
-               we want to tell you, feel free to contact us if you encounter
-               any issue, yours 9ossNet team.`
+        text: `Mr/Mrs ${name}, we are pleased to have you in our platform, we want to tell you, feel free to contact us if you encounter any issue.
+         Yours 9ossNet team.`
     };
     
     transporter.sendMail(mailOptions,(err,info)=>{

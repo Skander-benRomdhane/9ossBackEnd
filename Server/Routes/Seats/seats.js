@@ -1,11 +1,11 @@
 const express = require("express");
-const db = require("../../../Database/Configuration/index.js");
+const db = require("../../../Database/Controller/seats.js");
 const router = express.Router();
 
 // requests to seats route
 
 router.get("/", async (req, res) => {
-    await db.getAllSeats({})
+    await db.getAllSeats()
         .then(data => {
             res.json(data);
         })
@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 
-router.put("/seats", async (req, res) => {
+router.put("/change", async (req, res) => {
     await db.updateSeatAvailability(req.body)
         .then(results => {
             res.json(results)
@@ -24,5 +24,6 @@ router.put("/seats", async (req, res) => {
             console.log(error)
         })
 })
+
 
 module.exports = router;

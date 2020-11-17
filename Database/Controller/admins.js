@@ -38,10 +38,11 @@ const addNewEvent = (
   place,
   category,
   date,
-  description
+  description,
+  price
 ) => {
   return new Promise((resolve, reject) => {
-    let syntax = `INSERT INTO events(homeTeam,awayTeam,place,category,date,description) VALUES('${homeTeam}','${awayTeam}','${place}','${category}','${date}','${description}')`;
+    let syntax = `INSERT INTO events(homeTeam,awayTeam,place,category,date,description,price) VALUES('${homeTeam}','${awayTeam}','${place}','${category}','${date}','${description}','${price}')`;
     db.connection.query(syntax, (error, results) => {
       if (error) {
         return reject(error);
@@ -89,7 +90,7 @@ WHERE id = '${id}'`;
 // add new admin
 
 const addAdmin = (info) => {
-  let syntax = `INSERT INTO admins(firstName,lastName,email,password) VALUES(${info.firstName},${info.lastName},${info.email},${info.password}) ;`;
+  let syntax = `INSERT INTO admins(firstName,lastName,email,password) VALUES('${info.firstName}','${info.lastName}','${info.email}','${info.password}') ;`;
 
   return new Promise((resolve, reject) => {
     db.connection.query(syntax, (error, results) => {

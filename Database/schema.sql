@@ -16,10 +16,21 @@ CREATE TABLE users(
     profileImage varchar(100) NOT NULL,
     PRIMARY KEY (ID)
 );
-
+ 
 /* admins table */
 
 CREATE TABLE admins(
+    id int NOT NULL AUTO_INCREMENT,
+    firstName varchar(20) NOT NULL,
+    lastName varchar(20) NOT NULL,
+    email varchar(250),
+    password varchar(220) NOT NULL,
+    PRIMARY KEY (ID)
+);
+
+/* third Parties table */
+
+CREATE TABLE thirdp(
     id int NOT NULL AUTO_INCREMENT,
     firstName varchar(20) NOT NULL,
     lastName varchar(20) NOT NULL,
@@ -38,7 +49,8 @@ CREATE TABLE events (
     category varchar(20) NOT NULL,
     date varchar(20) NOT NULL,
     description varchar(20) NOT NULL,
-     PRIMARY KEY(ID)
+    price REAL NOT NULL,
+    PRIMARY KEY(ID)
 );
 
 /* purchases table */
@@ -90,7 +102,20 @@ CREATE TABLE tokens(
 
 );
 
+/* weekly qr Codes */
+
+CREATE TABLE weekCodes(
+    id int NOT NULL AUTO_INCREMENT,
+    codes varchar(220) NOT NULL,
+    id_user  int NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_userrID FOREIGN KEY (id_user) References users(id)
+
+);
+
+
+
 INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','elyes123','102031020','url:image/profile.jpg');
-INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship')
+INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description,price) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship',17)
 
 
