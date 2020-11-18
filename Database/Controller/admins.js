@@ -123,6 +123,53 @@ const getOneAdmin = (email) => {
   })
 };
 
+// add a refresh token to admin
+
+const addRefreshToken = (token,phoneNumber) => {
+  return new Promise((resolve, reject) => {
+      let syntax = `INSERT INTO tokens(token,id_user) VALUES('${token}',(SELECT id FROM admins WHERE email = '${email}'));`;
+      db.connection.query(syntax, (err, row) => {
+          if (err) {
+              reject(err)
+          } else {
+              resolve(row)
+          }
+      })
+  })
+};
+
+// get a admin refresh token
+
+const getRefreshToken = (token) => {
+  return new Promise((resolve, reject) => {
+      let syntax = `SELECT * FROM tokens WHERE token = '${token}';`;
+      db.connection.query(syntax, (err, row) => {
+          if (err) {
+              reject(err)
+          } else {
+              resolve(row)
+          }
+      })
+  })
+};
+
+
+
+// delete a admin refresh token
+
+const deleteAdminToken = (token) => {
+  return new Promise((resolve, reject) => {
+      let syntax = `DELETE FROM tokens WHERE token = '${token}';`;
+      db.connection.query(syntax, (err, row) => {
+          if (err) {
+              reject(err)
+          } else {
+              resolve(row)
+          }
+      })
+  })
+};
+
 module.exports = {
   addNewEvent,
   deleteAllEvents,
@@ -130,5 +177,8 @@ module.exports = {
   addNewSeat,
   deleteAllSeats,
   addAdmin,
-  getOneAdmin
+  getOneAdmin,
+  deleteAdminToken,
+  getRefreshToken,
+  addRefreshToken
 };

@@ -32,9 +32,7 @@ CREATE TABLE admins(
 
 CREATE TABLE thirdp(
     id int NOT NULL AUTO_INCREMENT,
-    firstName varchar(20) NOT NULL,
-    lastName varchar(20) NOT NULL,
-    email varchar(50),
+    identifier varchar(50),
     password varchar(220) NOT NULL,
     PRIMARY KEY (ID)
 );
@@ -117,5 +115,6 @@ CREATE TABLE weekCodes(
 
 INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','elyes123','102031020','url:image/profile.jpg');
 INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description,price) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship',17)
+INSERT INTO thirdP(id,homeTeam,awayTeam,place,category,date,description,price) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship',17)
 
 

@@ -1,4 +1,5 @@
 const express = require("express");
+const process = require('../../secrets.js')
 const db = require("../../../Database/Controller/admins.js");
 const { genSalt } = require('../Auth-Hash/salt.js');
 const { genHash } = require('../Auth-Hash/hash.js');
@@ -104,7 +105,13 @@ router.post('/signin', async (req, res) => {
         if (validPass === false) {
             return res.json({});
         } else {
-            res.status(200).json(admin)
+            const Token = process.ACCESS_TOKEN_SECRET;
+            const accessToken = Auth.accessToken(req.body.email, Token);
+            const refToken = process.REFRESH_TOKEN_SECRET;
+            const refreshToken = Auth.refreshToken(req.body.email, refToken)
+            const UserToken = db.addRefreshToken(refreshToken, req.body.email);
+            // getting the history of the user from  database and send it to user profile
+            res.json({ accessToken, refreshToken })
         }
     } catch (error) {
         console.log(error)
@@ -118,5 +125,30 @@ router.delete('/remove',async (req,res)=>{
    console.log(removed)
    res.status(200).json('Admin account is deleted!')
 })
+
+///////////////////////////////////////// Refresh Token Post /////////////////////////////////////////
+
+router.post('/token', async (req, res) => {
+    const refreshTokens = req.body.token
+    if (refreshTokens == null) return res.send(401)
+    const tokenCheck = await db.getRefreshToken(refreshTokens)
+    if (!tokenCheck.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshTokens, process.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        const accesToken = Auth.accessToken(user.email, process.ACCESS_TOKEN_SECRET)
+        res.json({ accesToken })
+    })
+})
+
+///////////////////////////////////////// Refresh Token End /////////////////////////////////////////
+
+///////////////////////////////////////// Log Out And Delete Token  ////////////////////////////////
+
+router.delete('/signout', (req, res) => {
+    db.deleteAdminToken(req.body.token)
+    res.sendStatus(204)
+})
+
+///////////////////////////////////// Log Out And Delete Token End  ////////////////////////////////
 
 module.exports = router;
