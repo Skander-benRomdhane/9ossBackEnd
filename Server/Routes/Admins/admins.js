@@ -4,8 +4,23 @@ const db = require("../../../Database/Controller/admins.js");
 const { genSalt } = require('../Auth-Hash/salt.js');
 const { genHash } = require('../Auth-Hash/hash.js');
 const bcrypt = require('bcrypt');
+const Auth = require('../Auth-Hash/authToken.js');
+const database = require("../../../Database/Controller/events.js");
+
+
 
 const router = express.Router();
+
+router.get("/events", async (req, res) => {
+    await database.getAllEvents({})
+    .then(data => {
+        res.json(data);
+    })
+    .catch(error=>{
+        res.send(error)
+    })
+   });
+   
 
 router.post('/events/add', async (req, res) => {
     let homeTeam = req.body.homeTeam;
@@ -24,7 +39,6 @@ router.post('/events/add', async (req, res) => {
             res.status(500).json(error)
         })
 });
-
 
 router.post('/seats/add', async (req, res) => {
     let type = req.body.type;
@@ -65,6 +79,7 @@ router.delete("/events/remove", async (req, res) => {
 });
 
 router.put("/events/update", async (req, res) => {
+    console.log(req.body)
     await db.updateEventInfo(req.body)
         .then(results => {
             res.json(results)
@@ -87,7 +102,7 @@ router.post("/register", async (req, res) => {
         // add the new User
         req.body.password = hashedPassword;
         const registredUser = await db.addAdmin(req.body);
-        res.json(registredUser);
+        res.json(registredUser.message = "New Admin Were Added");
     } catch (error) {
         console.log(error)
     }

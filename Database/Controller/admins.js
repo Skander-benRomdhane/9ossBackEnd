@@ -69,11 +69,7 @@ const deleteAllEvents = () => {
 };
 
 const updateEventInfo = (info) => {
-  let syntax = `UPDATE events
-SET description = '${info.description}',
- date = '${info.date}',
-WHERE id = '${id}'`;
-
+  let syntax = `UPDATE events SET description = '${info.description}', date = '${info.date}' WHERE id =${info.id}`;
   return new Promise((resolve, reject) => {
     db.connection.query(syntax, (error, results) => {
       if (error) {

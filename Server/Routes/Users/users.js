@@ -29,7 +29,6 @@ const schema = Joi.object().keys({
 router.post("/signup", async (req, res) => {
     // check if user informations exists
     const phoneExists = await db.getOneUser(req.body.phoneNumber);
-    console.log(`${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)}`)
     if (phoneExists.length > 0) return res.json({ message: "User already exists" });
     if (req.body.code === `${req.body.firstName[0].charCodeAt(0)}${req.body.phoneNumber[0].charCodeAt(0)}`) {
         try {

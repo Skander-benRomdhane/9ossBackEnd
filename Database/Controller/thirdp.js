@@ -4,7 +4,7 @@ const db = require('../Configuration/index.js');
 
 const checkThirdP = (identifier) => {
     return new Promise((resolve, reject) => {
-        let syntax = `SELECT * from thirdp WHERE idenfitier = '${identifier}';`;
+        let syntax = `SELECT * from thirdp WHERE identifier = '${identifier}';`;
         db.connection.query(syntax, (err, row) => {
             if (err) {
                 reject(err)
