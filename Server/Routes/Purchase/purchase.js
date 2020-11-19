@@ -30,7 +30,7 @@ router.get('/success',(req,res)=>{
 // waiting for confirmation from paypall then running the qr generator 
 router.post("/pay", (req, res) => {
 
-    payment(req,res)
+    // payment(req,res)
     const code = req.body.code;
     if ((code.length === 0) || (!code)) res.json("Empty Data!");
     qr.toDataURL(code, (err, src) => {

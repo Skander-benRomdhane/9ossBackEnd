@@ -110,10 +110,8 @@ CREATE TABLE tokens(
 CREATE TABLE weekCodes(
     id int NOT NULL AUTO_INCREMENT,
     codes varchar(220) NOT NULL,
-    id_user  int NOT NULL,
-    PRIMARY KEY(ID),
-    CONSTRAINT FK_userrID FOREIGN KEY (id_user) References users(id)
-
+    PRIMARY KEY(ID)
+    
 );
 
 
@@ -122,5 +120,6 @@ INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage)
 INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description,price) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship',17);
 INSERT INTO seats(id,number,type,availability,userid,matchid) VALUES(1,101,'pelouse',true,null,1);
 INSERT INTO seats(id,number,type,availability,userid,matchid) VALUES(2,101,'enceinte',false,1,1);
-INSERT INTO thirdp(id,identifier,password) VALUES(1,'00002','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u')
+INSERT INTO thirdp(id,identifier,password) VALUES(1,'00002','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u');
+INSERT INTO weekCodes(id,codes) VALUES(1,'123456');
 

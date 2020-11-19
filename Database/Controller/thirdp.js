@@ -62,7 +62,7 @@ const deleteUserToken = (token) => {
 
 const checkQrCode = (code) => {
     return new Promise((resolve, reject) => {
-        let syntax = `select * from FROM weekCodes WHERE codes = '${code}';`;
+        let syntax = `Select * FROM weekCodes WHERE codes = '${code}';`;
         db.connection.query(syntax, (err, row) => {
             if (err) {
                 reject(err)
@@ -75,11 +75,24 @@ const checkQrCode = (code) => {
 
 const deleteQrCode = (code) => {
     return new Promise((resolve, reject) => {
-        let syntax = `DELETE FROM weekCodes WHERE codes = '${code}';`;
+        let syntax = `DELETE  FROM weekCodes WHERE codes = '${code}';`;
         db.connection.query(syntax, (err, row) => {
             if (err) {
                 reject(err)
             } else {
+                resolve(row)
+            }
+        })
+    })
+};
+
+const getAllCodes = () =>{
+    return new Promise((resolve,reject)=>{
+        let syntax = `SELECT * FROM weekCodes`;
+        db.connection.query(syntax,(err,row)=>{
+            if(err){
+                reject(err)
+            }else{
                 resolve(row)
             }
         })
@@ -93,6 +106,7 @@ module.exports = {
     getRefreshToken,
     deleteUserToken,
     checkQrCode,
-    deleteQrCode
+    deleteQrCode,
+    getAllCodes
 
 };

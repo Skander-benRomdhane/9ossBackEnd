@@ -65,13 +65,20 @@ router.delete('/signout', (req, res) => {
 ////////////////////////////////////////  Scan the ticket /////////////////////////////////////////
 
 router.delete('/scan',async (req,res)=>{
+    console.log(req.body.code)
    const qr = await db.checkQrCode(req.body.code)
-   if(!qr){
-       res.status(204).json('there is no code!')
+   console.log(qr)
+   if(qr.length === 0){
+       res.status(204).json('Code is not valid!')
    }else{
      const allowed = await db.deleteQrCode(req.body.code);
      res.status(200).json({allowed: allowed, message: 'Code is valid!' })
    }
+})
+
+router.get('/all',async (req,res)=>{
+   const allCodes = await db.getAllCodes()
+   console.log(allCodes)
 })
 
 

@@ -5,7 +5,7 @@ const cors = require('cors')
 const port = 5000;
 
 // import the routes
-
+ 
 const users = require('./Routes/Users/users.js')
 // const tickets = require('./Routes/Tickets/tickets.js')
 const purchase = require('./Routes/Purchase/purchase.js')
@@ -17,7 +17,6 @@ const thirdp = require('./Routes/Thirdp/Thirdp.js')
 app.use(cors());
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}));
-
 
 // middlwares
 app.use('/users', users);
