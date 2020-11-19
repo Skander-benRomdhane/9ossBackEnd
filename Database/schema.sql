@@ -114,6 +114,14 @@ CREATE TABLE weekCodes(
     
 );
 
+CREATE TABLE messages(
+    id int NOT NULL AUTO_INCREMENT,
+    message varchar(220),
+    admin_id int NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_adminID FOREIGN KEY (admin_id) References admins(id)
+);
+
 
 
 INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','elyes123','102031020','url:image/profile.jpg');
@@ -122,4 +130,6 @@ INSERT INTO seats(id,number,type,availability,userid,matchid) VALUES(1,101,'pelo
 INSERT INTO seats(id,number,type,availability,userid,matchid) VALUES(2,101,'enceinte',false,1,1);
 INSERT INTO thirdp(id,identifier,password) VALUES(1,'00002','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u');
 INSERT INTO weekCodes(id,codes) VALUES(1,'123456');
+INSERT INTO admins(id,firstName,lastName,email,password) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u');
+INSERT INTO messages(id,message,admin_id) VALUES(1,'Welcome to admins platform',1);
 
