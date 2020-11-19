@@ -6,12 +6,33 @@ const { genHash } = require('../Auth-Hash/hash.js');
 const bcrypt = require('bcrypt');
 const Auth = require('../Auth-Hash/authToken.js');
 const database = require("../../../Database/Controller/events.js");
-
+const jwt = require('jsonwebtoken');
 
 
 const router = express.Router();
 
-router.get("/events", async (req, res) => {
+///////////////////////////////////////// access Token  /////////////////////////////////////////
+
+const auth = (req, res, next) => {
+    try{
+        const {authorized} = req.headers;
+        if(authorized){
+            const token = authorized.split('')[1];
+            const Token = process.ACCESS_TOKEN_SECRET;
+            const result = jwt.verify(token, Token);
+            req.user = result;
+            next()
+        }else{
+            res.send('No Token')
+        }
+    }catch(err){
+        res.send(err)
+    }
+}
+
+///////////////////////////////////////// access Token End /////////////////////////////////////////
+
+router.get("/events", auth, async (req, res) => {
     await database.getAllEvents({})
     .then(data => {
         res.json(data);
@@ -20,9 +41,9 @@ router.get("/events", async (req, res) => {
         res.send(error)
     })
    });
-   
+ 
 
-router.post('/events/add', async (req, res) => {
+router.post('/events/add', auth, async (req, res) => {
     let homeTeam = req.body.homeTeam;
     let awayTeam = req.body.awayTeam;
     let place = req.body.place;
@@ -40,7 +61,7 @@ router.post('/events/add', async (req, res) => {
         })
 });
 
-router.post('/seats/add', async (req, res) => {
+router.post('/seats/add', auth, async (req, res) => {
     let type = req.body.type;
     let number = req.body.Number;
     let availability = req.body.availability;
@@ -55,7 +76,7 @@ router.post('/seats/add', async (req, res) => {
         })
 });
 
-router.delete("/seats/remove", async (req, res) => {
+router.delete("/seats/remove", auth,async (req, res) => {
     await db.deleteAllSeats(req.body)
         .then(results => {
 
@@ -67,7 +88,7 @@ router.delete("/seats/remove", async (req, res) => {
 });
 
 
-router.delete("/events/remove", async (req, res) => {
+router.delete("/events/remove", auth , async (req, res) => {
     await db.deleteAllEvents(req.body)
         .then(results => {
 
@@ -78,7 +99,7 @@ router.delete("/events/remove", async (req, res) => {
         })
 });
 
-router.put("/events/update", async (req, res) => {
+router.put("/events/update", auth,async (req, res) => {
     console.log(req.body)
     await db.updateEventInfo(req.body)
         .then(results => {
@@ -91,7 +112,7 @@ router.put("/events/update", async (req, res) => {
 
 // admin sign up
 
-router.post("/register", async (req, res) => {
+router.post("/register", auth, async (req, res) => {
     // check if user informations exists
     const emailExists = await db.getOneAdmin(req.body.email);
     if (emailExists.length > 0) return res.json({ message: "Admin already exists" });
@@ -121,12 +142,8 @@ router.post('/signin', async (req, res) => {
             return res.json({});
         } else {
             const Token = process.ACCESS_TOKEN_SECRET;
-            const accessToken = Auth.accessToken(req.body.email, Token);
-            const refToken = process.REFRESH_TOKEN_SECRET;
-            const refreshToken = Auth.refreshToken(req.body.email, refToken)
-            const UserToken = db.addRefreshToken(refreshToken, req.body.email);
-            // getting the history of the user from  database and send it to user profile
-            res.json({ accessToken, refreshToken })
+            const token = jwt.sign({email: req.body.email},Token)
+            res.json({ token })
         }
     } catch (error) {
         console.log(error)
@@ -135,31 +152,17 @@ router.post('/signin', async (req, res) => {
 
 // remove an admin
 
-router.delete('/remove',async (req,res)=>{
+router.delete('/remove',auth,async (req,res)=>{
    const removed = await db.deleteAdmin(req.body.email);
    console.log(removed)
    res.status(200).json('Admin account is deleted!')
 })
 
-///////////////////////////////////////// Refresh Token Post /////////////////////////////////////////
 
-router.post('/token', async (req, res) => {
-    const refreshTokens = req.body.token
-    if (refreshTokens == null) return res.send(401)
-    const tokenCheck = await db.getRefreshToken(refreshTokens)
-    if (!tokenCheck.includes(refreshToken)) return res.sendStatus(403)
-    jwt.verify(refreshTokens, process.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        const accesToken = Auth.accessToken(user.email, process.ACCESS_TOKEN_SECRET)
-        res.json({ accesToken })
-    })
-})
-
-///////////////////////////////////////// Refresh Token End /////////////////////////////////////////
 
 ///////////////////////////////////////// Log Out And Delete Token  ////////////////////////////////
 
-router.delete('/signout', (req, res) => {
+router.delete('/signout', auth,(req, res) => {
     db.deleteAdminToken(req.body.token)
     res.sendStatus(204)
 })
