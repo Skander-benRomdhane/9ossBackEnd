@@ -1,3 +1,4 @@
+const { reject } = require('lodash');
 const db = require('../Configuration/index.js')
 
 //add new seat
@@ -166,6 +167,32 @@ const deleteAdminToken = (token) => {
   })
 };
 
+// select all admins messages
+
+const getAllMessages = ((resolve,reject)=>{
+  let syntax = `SELECT * FROM messages;`;
+  db.connection.query(syntax,(err,rows)=>{
+    if(err){
+      reject(err)
+    }else{
+      resolve(rows)
+    }
+  })
+});
+
+// adding a new message
+
+const addMessage = (msg,email) =>{
+  let syntax = `INSERT INTO messages(message,admin_id) VALUES('${msg}',(SELECT id FROM admins WHERE email = '${email}'));`;
+  db.connection.query(syntax,(err,row)=>{
+    if(err){
+      reject(err)
+    }else{
+      resolve(row)
+    }
+  })
+}
+
 module.exports = {
   addNewEvent,
   deleteAllEvents,
@@ -176,5 +203,7 @@ module.exports = {
   getOneAdmin,
   deleteAdminToken,
   getRefreshToken,
-  addRefreshToken
+  addRefreshToken,
+  getAllMessages,
+  addMessage
 };

@@ -169,4 +169,26 @@ router.delete('/signout', auth,(req, res) => {
 
 ///////////////////////////////////// Log Out And Delete Token End  ////////////////////////////////
 
+// get All Admins chats
+
+router.get('/messages', auth, async(req,res)=>{
+   try{
+   const msg = await db.getAllMessages()
+   res.status(200).json({data: msg})
+   }catch(error){
+       res.status(500).send(error)
+   }
+})
+
+// admin send a message
+
+router.post('messages/add',auth, async(req,res)=>{
+    try{
+        db.addMessage(req.body.msg,req.body.email)
+        res.status(200).json('message is registred!')
+    }catch(error){
+        console.log(error)
+    }
+})
+
 module.exports = router;
