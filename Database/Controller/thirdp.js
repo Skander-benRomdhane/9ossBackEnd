@@ -1,11 +1,10 @@
 const db = require('../Configuration/index.js');
 
+// check a registred thirdP informations
 
-// adding a new user
-
-const addUser = (info) => {
+const checkThirdP = (identifier) => {
     return new Promise((resolve, reject) => {
-        let syntax = `INSERT INTO users(firstName,lastName,email,password,phoneNumber,profileImage) VALUES('${info.firstName}','${info.lastName}','${info.email}','${info.password}','${info.phoneNumber}','${info.profileImage}');`
+        let syntax = `SELECT * from thirdp WHERE identifier = '${identifier}';`;
         db.connection.query(syntax, (err, row) => {
             if (err) {
                 reject(err)
@@ -16,41 +15,11 @@ const addUser = (info) => {
     });
 };
 
-// getting a user by informations
+// add a refresh token to thirdp
 
-const getOneUser = (phoneNumber) => {
+const addRefreshToken = (token,identifier) => {
     return new Promise((resolve, reject) => {
-        let syntax = `SELECT firstName from users WHERE phoneNumber = ${phoneNumber} ;`;
-        db.connection.query(syntax, (err, row) => {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(row)
-            }
-        });
-    });
-};
-
-// check a registred User informations
-
-const checkUser = (phoneNumber) => {
-    return new Promise((resolve, reject) => {
-        let syntax = `SELECT * from users WHERE phoneNumber = '${phoneNumber}';`;
-        db.connection.query(syntax, (err, row) => {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(row)
-            }
-        });
-    });
-};
-
-// add a refresh token to user
-
-const addRefreshToken = (token,phoneNumber) => {
-    return new Promise((resolve, reject) => {
-        let syntax = `INSERT INTO tokens(token,id_user) VALUES('${token}',(SELECT id FROM users WHERE phoneNumber = '${phoneNumber}'));`;
+        let syntax = `INSERT INTO tokens(token,id_user) VALUES('${token}',(SELECT id FROM thirdp WHERE identifier = '${identifier}'));`;
         db.connection.query(syntax, (err, row) => {
             if (err) {
                 reject(err)
@@ -61,7 +30,7 @@ const addRefreshToken = (token,phoneNumber) => {
     })
 };
 
-// get a user refresh token
+// get a thirdp refresh token
 
 const getRefreshToken = (token) => {
     return new Promise((resolve, reject) => {
@@ -76,7 +45,7 @@ const getRefreshToken = (token) => {
     })
 };
 
-// delete a user refresh token
+// delete a thirdp refresh token
 
 const deleteUserToken = (token) => {
     return new Promise((resolve, reject) => {
@@ -91,13 +60,53 @@ const deleteUserToken = (token) => {
     })
 };
 
-// exporting the methods
+const checkQrCode = (code) => {
+    return new Promise((resolve, reject) => {
+        let syntax = `Select * FROM weekCodes WHERE codes = '${code}';`;
+        db.connection.query(syntax, (err, row) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(row)
+            }
+        })
+    })
+};
+
+const deleteQrCode = (code) => {
+    return new Promise((resolve, reject) => {
+        let syntax = `DELETE  FROM weekCodes WHERE codes = '${code}';`;
+        db.connection.query(syntax, (err, row) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(row)
+            }
+        })
+    })
+};
+
+const getAllCodes = () =>{
+    return new Promise((resolve,reject)=>{
+        let syntax = `SELECT * FROM weekCodes`;
+        db.connection.query(syntax,(err,row)=>{
+            if(err){
+                reject(err)
+            }else{
+                resolve(row)
+            }
+        })
+    })
+};
+
 
 module.exports = {
-    addUser,
-    getOneUser,
-    checkUser,
+    checkThirdP,
     addRefreshToken,
     getRefreshToken,
-    deleteUserToken
+    deleteUserToken,
+    checkQrCode,
+    deleteQrCode,
+    getAllCodes
+
 };

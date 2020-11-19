@@ -6,9 +6,9 @@ const getAllSeats = function () {
     return new Promise((resolve, reject) => {
         db.connection.query(`SELECT * FROM  seats`, (error, results) => {
             if (error) {
-                return reject(error);
+                reject(error);
             }
-            resolve(results);
+                resolve(results);
         });
     });
 };
@@ -30,7 +30,8 @@ const updateSeatAvailability = (av) => {
             }
         })
     })
-}
+};
+
 
 module.exports = {
     getAllSeats,

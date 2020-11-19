@@ -1,5 +1,8 @@
 const express = require("express");
-const db = require("../../../Database/Configuration/index.js");
+const db = require("../../../Database/Controller/ticket.js");
 const router = express.Router();
 
-// requests to tickets route
+
+
+
+module.exports = router;
