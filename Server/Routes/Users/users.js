@@ -89,7 +89,7 @@ router.post('/signin', async (req, res) => {
             const refreshToken = Auth.refreshToken(req.body.phoneNumber, refToken)
             const UserToken = db.addRefreshToken(refreshToken, req.body.phoneNumber);
             // getting the history of the user from  database and send it to user profile
-            res.json({ accessToken, refreshToken })
+            res.json({ accessToken, refreshToken, phoneNumber: req.body.phoneNumber })
         }
     } catch (error) {
         if (error.isJoi === true) res.status(500).json(error.details[0].message);

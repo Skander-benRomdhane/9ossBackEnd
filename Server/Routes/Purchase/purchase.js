@@ -28,9 +28,10 @@ router.get('/success',(req,res)=>{
 
 
 // waiting for confirmation from paypall then running the qr generator 
-router.post("/pay", (req, res) => {
+router.post("/pay",(req, res) => {
 
-    // payment(req,res)
+    const a = payment(req,res)
+    console.log(a)
     const code = req.body.code;
     if ((code.length === 0) || (!code)) res.json("Empty Data!");
     qr.toDataURL(code, (err, src) => {
@@ -40,12 +41,6 @@ router.post("/pay", (req, res) => {
 });
  
 const payment = (req,res) =>{
-    paypal.configure({
-        'mode': 'sandbox',
-        'client_id': 'EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM',
-        'client_secret': 'EO422dn3gQLgDbuwqTjzrFgFtaRLRR5BdHEESmha49TM'
-      });
-
 
 paypal.configure({
     'mode': 'sandbox',
@@ -94,6 +89,14 @@ paypal.configure({
           }
       }
   });
-}
+};
+
+// get the purchase's history 
+
+router.post('/history', async (req,res)=>{
+    const phone = req.body.numberPhone;
+   const history = await db.getAllPurcahses(phone)
+    res.status(200).json(history)
+})
 
 module.exports = router;

@@ -57,8 +57,8 @@ const addNewEvent = (
 
 
 const deleteAllEvents = () => {
-  let syntax = `DELETE FROM events`;
   return new Promise((resolve, reject) => {
+    let syntax = `DELETE FROM events`;
     db.connection.query(syntax, (error, results) => {
       if (error) {
         return reject(error);
@@ -169,7 +169,8 @@ const deleteAdminToken = (token) => {
 
 // select all admins messages
 
-const getAllMessages = ((resolve,reject)=>{
+const getAllMessages = () =>{ 
+  return new Promise( (resolve,reject)=>{
   let syntax = `SELECT * FROM messages;`;
   db.connection.query(syntax,(err,rows)=>{
     if(err){
@@ -178,12 +179,14 @@ const getAllMessages = ((resolve,reject)=>{
       resolve(rows)
     }
   })
-});
+})
+};
 
 // adding a new message
 
-const addMessage = (msg,email) =>{
-  let syntax = `INSERT INTO messages(message,admin_id) VALUES('${msg}',(SELECT id FROM admins WHERE email = '${email}'));`;
+const addMessage = (msg) =>{
+  return new Promise((resolve,reject)=>{
+  let syntax = `INSERT INTO messages(message) VALUES('${msg}');`;
   db.connection.query(syntax,(err,row)=>{
     if(err){
       reject(err)
@@ -191,7 +194,34 @@ const addMessage = (msg,email) =>{
       resolve(row)
     }
   })
+})
+};
+
+const getAllEvents = () =>{
+  return new Promise((resolve,reject)=>{
+    let syntax = `SELECT * FROM events ;`;
+    db.connection.query(syntax,(err,rows)=>{
+      if(err){
+        reject(err)
+      }else{
+        resolve(rows)
+      }
+    })
+  })
 }
+
+const getAllSeats = () =>{
+  return new Promise((resolve,reject)=>{
+    let syntax = `SELECT * FROM seats ;`;
+    db.connection.query(syntax,(err,rows)=>{
+      if(err){
+        reject(err)
+      }else{
+        resolve(rows)
+      }
+    })
+  })
+};
 
 module.exports = {
   addNewEvent,
@@ -205,5 +235,7 @@ module.exports = {
   getRefreshToken,
   addRefreshToken,
   getAllMessages,
-  addMessage
+  addMessage,
+  getAllSeats,
+  getAllEvents
 };
