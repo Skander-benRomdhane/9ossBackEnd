@@ -91,6 +91,20 @@ const deleteUserToken = (token) => {
     })
 };
 
+// getting a user by phoe
+
+const getAUser = (phoneNumber) => {
+    return new Promise((resolve, reject) => {
+        let syntax = `SELECT * from users WHERE phoneNumber = ${phoneNumber} ;`;
+        db.connection.query(syntax, (err, row) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(row)
+            }
+        });
+    });
+};
  
 // exporting the methods
 
@@ -100,5 +114,6 @@ module.exports = {
     checkUser,
     addRefreshToken,
     getRefreshToken,
-    deleteUserToken
+    deleteUserToken,
+    getAUser
 };

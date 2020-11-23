@@ -71,7 +71,7 @@ const deleteAllEvents = () => {
 };
 
 const updateEventInfo = (info) => {
-  let syntax = `UPDATE events SET description = '${info.description}', date = '${info.date}' WHERE id =${info.id}`;
+  let syntax = `UPDATE events SET homeTeam= '${homeTeam}, awayTeam= '${info.awayTeam}', place='${info.place}', category='${info.category}', date = '${info.date}', description = '${info.description}' WHERE id =${info.id}`;
   return new Promise((resolve, reject) => {
     db.connection.query(syntax, (error, results) => {
       if (error) {
