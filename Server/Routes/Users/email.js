@@ -26,7 +26,23 @@ const sendEmail = (name,email) =>{
         }
     });
 };
-
+const sendCode = (code,email) =>{
+    const mailOptions = {
+        from: 'officialef@hotmail.com',
+        to: `${email}`,
+        subject: 'Purchase code',
+        text: `this is your purchase code: ${code}, please save it and keep it safe.`
+    };
+    
+    transporter.sendMail(mailOptions,(err,info)=>{
+        if(err){
+            console.log(err)
+        }else{
+            console.log(`Email is sent: ${info}`)
+        }
+    });
+}
 module.exports = {
-    sendEmail
+    sendEmail,
+    sendCode
 }

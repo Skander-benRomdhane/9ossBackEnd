@@ -91,7 +91,7 @@ router.post('/signin', async (req, res) => {
             const refreshToken = Auth.refreshToken(req.body.phoneNumber, refToken)
             const UserToken = db.addRefreshToken(refreshToken, req.body.phoneNumber);
             // getting the history of the user from  database and send it to user profile
-            res.status(200).json(accessToken)
+            res.status(200).json({token: accessToken,phone: req.body.numberPhone})
         }
     } catch (error) {
         if (error.isJoi === true) res.status(500).json(error.details[0].message);
@@ -125,5 +125,9 @@ router.delete('/signout', (req, res) => {
 
 ///////////////////////////////////// Log Out And Delete Token End  ////////////////////////////////
 
+router.post('/getuser',async (req,res)=>{
+   const informations = await db.getAUser(req.body.phone);
+    res.status(200).json(informations)
+})
 
 module.exports = router;
