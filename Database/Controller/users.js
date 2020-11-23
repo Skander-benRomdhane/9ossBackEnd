@@ -80,7 +80,7 @@ const getRefreshToken = (token) => {
 
 const deleteUserToken = (token) => {
     return new Promise((resolve, reject) => {
-        let syntax = `DELETE FROM tokens WHERE token = '${token}';`;
+        let syntax = `DELETE FROM tokens`;
         db.connection.query(syntax, (err, row) => {
             if (err) {
                 reject(err)
@@ -91,6 +91,7 @@ const deleteUserToken = (token) => {
     })
 };
 
+ 
 // exporting the methods
 
 module.exports = {
