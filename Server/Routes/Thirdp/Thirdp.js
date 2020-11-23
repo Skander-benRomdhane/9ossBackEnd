@@ -53,13 +53,14 @@ router.post('/signin', async (req, res) => {
 
 ////////////////////////////////////////  Scan the ticket /////////////////////////////////////////
 
-router.delete('/scan', auth,async (req,res)=>{
-    console.log(req.body.code)
+router.delete('/scan',async (req,res)=>{
+    console.log(req.body)
    const qr = await db.checkQrCode(req.body.code)
    console.log(qr)
    if(qr.length === 0){
        res.status(204).json('Code is not valid!')
    }else{
+       console.log(qr)
      const allowed = await db.deleteQrCode(req.body.code);
      res.status(200).json({allowed: allowed, message: 'Code is valid!' })
    }

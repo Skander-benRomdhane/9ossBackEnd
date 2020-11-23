@@ -32,8 +32,8 @@ const auth = (req, res, next) => {
 
 ///////////////////////////////////////// access Token End /////////////////////////////////////////
 
-router.get("/events", auth, async (req, res) => {
-    await database.getAllEvents({})
+router.get("/events", async (req, res) => {
+    await db.getAllEvents()
     .then(data => {
         res.json(data);
     })
@@ -43,7 +43,7 @@ router.get("/events", auth, async (req, res) => {
    });
  
 
-router.post('/events/add', auth, async (req, res) => {
+router.post('/events/add', async (req, res) => {
     let homeTeam = req.body.homeTeam;
     let awayTeam = req.body.awayTeam;
     let place = req.body.place;
@@ -51,8 +51,8 @@ router.post('/events/add', auth, async (req, res) => {
     let date = req.body.date;
     let description = req.body.description;
     let price = req.body.price;
-    console.log(req.body)
-    await db.addNewEvent(homeTeam, awayTeam, place, category, date, description, price)
+    let image = req.body.image;
+    await db.addNewEvent(homeTeam, awayTeam, place, category, date, description, price,image)
         .then(data => {
             res.json(data)
         })
@@ -61,7 +61,7 @@ router.post('/events/add', auth, async (req, res) => {
         })
 });
 
-router.post('/seats/add', auth, async (req, res) => {
+router.post('/seats/add', async (req, res) => {
     let type = req.body.type;
     let number = req.body.Number;
     let availability = req.body.availability;
@@ -76,7 +76,7 @@ router.post('/seats/add', auth, async (req, res) => {
         })
 });
 
-router.delete("/seats/remove", auth,async (req, res) => {
+router.delete("/seats/remove",async (req, res) => {
     await db.deleteAllSeats(req.body)
         .then(results => {
 
@@ -88,10 +88,9 @@ router.delete("/seats/remove", auth,async (req, res) => {
 });
 
 
-router.delete("/events/remove", auth , async (req, res) => {
+router.delete("/events/remove", async (req, res) => {
     await db.deleteAllEvents(req.body)
         .then(results => {
-
             res.json("all events deleted ");
         })
         .catch(error => {
@@ -99,7 +98,7 @@ router.delete("/events/remove", auth , async (req, res) => {
         })
 });
 
-router.put("/events/update", auth,async (req, res) => {
+router.put("/events/update",async (req, res) => {
     console.log(req.body)
     await db.updateEventInfo(req.body)
         .then(results => {
@@ -112,7 +111,8 @@ router.put("/events/update", auth,async (req, res) => {
 
 // admin sign up
 
-router.post("/register", auth, async (req, res) => {
+router.post("/register", async (req, res) => {
+    console.log(req.body)
     // check if user informations exists
     const emailExists = await db.getOneAdmin(req.body.email);
     if (emailExists.length > 0) return res.json({ message: "Admin already exists" });
@@ -152,7 +152,7 @@ router.post('/signin', async (req, res) => {
 
 // remove an admin
 
-router.delete('/remove',auth,async (req,res)=>{
+router.delete('/remove',async (req,res)=>{
    const removed = await db.deleteAdmin(req.body.email);
    console.log(removed)
    res.status(200).json('Admin account is deleted!')
@@ -171,10 +171,10 @@ router.delete('/signout', auth,(req, res) => {
 
 // get All Admins chats
 
-router.get('/messages', auth, async(req,res)=>{
+router.get('/messages', async(req,res)=>{
    try{
    const msg = await db.getAllMessages()
-   res.status(200).json({data: msg})
+       res.status(200).json(msg)
    }catch(error){
        res.status(500).send(error)
    }
@@ -182,10 +182,21 @@ router.get('/messages', auth, async(req,res)=>{
 
 // admin send a message
 
-router.post('messages/add',auth, async(req,res)=>{
+router.post('/messages/add', async(req,res)=>{
     try{
-        db.addMessage(req.body.msg,req.body.email)
+        db.addMessage(req.body.msg)
         res.status(200).json('message is registred!')
+    }catch(error){
+        console.log(error)
+    }
+});
+
+// admin get all seats 
+
+router.get('/seats', async (req,res)=>{
+    try{
+       const allSeats = await db.getAllSeats();
+       res.status(200).json(allSeats)
     }catch(error){
         console.log(error)
     }

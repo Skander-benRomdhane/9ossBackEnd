@@ -19,7 +19,7 @@ const schema = Joi.object().keys({
     lastName: Joi.string().required(),
     password: Joi.string().uppercase(1).required(),
     phoneNumber: Joi.number().required(),
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr'] } }),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr'] } }).optional(),
     profileImage: Joi.string().allow('').optional(),
     code: Joi.required()
 })
@@ -42,7 +42,7 @@ router.post("/signup", async (req, res) => {
             if (req.body.email) {
                 mail.sendEmail(req.body.firstName, req.body.email)
             }
-            res.json(registredUser);
+            res.json({text: 'ok'});
 
         } catch (error) {
             if (error.isJoi === true) res.status(500).json(error.details[0].message);
@@ -72,10 +72,12 @@ router.post("/verify", async (req, res) => {
 
 
 router.post('/signin', async (req, res) => {
-    const phone = req.body.phoneNumber;
+    console.log(req.body)
+    const phone = req.body.numberPhone;
     try {
         // const { error } = await loginschema.validateAsync(req.body);
         const user = await db.checkUser(phone);
+        console.log(user)
         if (!user) return res.json({});
         //check password
         const validPass = await bcrypt.compare(req.body.password, user[0].password)
@@ -89,12 +91,11 @@ router.post('/signin', async (req, res) => {
             const refreshToken = Auth.refreshToken(req.body.phoneNumber, refToken)
             const UserToken = db.addRefreshToken(refreshToken, req.body.phoneNumber);
             // getting the history of the user from  database and send it to user profile
-            res.json({ accessToken, refreshToken })
+            res.status(200).json(accessToken)
         }
     } catch (error) {
         if (error.isJoi === true) res.status(500).json(error.details[0].message);
     }
-
 })
 
 ///////////////////////////////////////// Log In End /////////////////////////////////////////
