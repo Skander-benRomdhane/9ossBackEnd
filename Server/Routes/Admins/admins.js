@@ -51,8 +51,8 @@ router.post('/events/add', async (req, res) => {
     let date = req.body.date;
     let description = req.body.description;
     let price = req.body.price;
-    console.log(req.body)
-    await db.addNewEvent(homeTeam, awayTeam, place, category, date, description, price)
+    let image = req.body.image;
+    await db.addNewEvent(homeTeam, awayTeam, place, category, date, description, price,image)
         .then(data => {
             res.json(data)
         })

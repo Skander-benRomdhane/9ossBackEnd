@@ -40,10 +40,11 @@ const addNewEvent = (
   category,
   date,
   description,
-  price
+  price,
+  image
 ) => {
   return new Promise((resolve, reject) => {
-    let syntax = `INSERT INTO events(homeTeam,awayTeam,place,category,date,description,price) VALUES('${homeTeam}','${awayTeam}','${place}','${category}','${date}','${description}','${price}')`;
+    let syntax = `INSERT INTO events(homeTeam,awayTeam,place,category,date,description,price,image) VALUES('${homeTeam}','${awayTeam}','${place}','${category}','${date}','${description}','${price}','${image}')`;
     db.connection.query(syntax, (error, results) => {
       if (error) {
         return reject(error);

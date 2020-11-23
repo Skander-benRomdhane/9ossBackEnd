@@ -46,8 +46,9 @@ CREATE TABLE events (
     place varchar(20) NOT NULL,
     category varchar(20) NOT NULL,
     date varchar(20) NOT NULL,
-    description varchar(20) NOT NULL,
+    description varchar(200) NOT NULL,
     price REAL NOT NULL,
+    image varchar(200),
     PRIMARY KEY(ID)
 );
 
@@ -55,7 +56,7 @@ CREATE TABLE events (
 
 CREATE TABLE purchases(
     id int NOT NULL AUTO_INCREMENT,
-    code REAL NOT NULL,
+    code varchar(200) NOT NULL,
     date varchar(20) NOT NULL,
     ammount REAL NOT NULL,
     user_id int NOT NULL,
@@ -122,13 +123,18 @@ CREATE TABLE messages(
 
 
 
-INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u','111222333','url:image/profile.jpg');
-INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description,price) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship',17);
+INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u','11111','url:image/profile.jpg');
+INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(2,'Ali','Smaoui','ali@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u','22222','url:image/profile.jpg');
+INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(3,'Omar','Chaouachi','omar@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u','33333','url:image/profile.jpg');
+INSERT INTO users(id,firstName,lastName,email,password,phoneNumber,profileImage) VALUES(4,'Skander','Bromdhan','skander@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u','44444','url:image/profile.jpg');
+INSERT INTO events(id,homeTeam,awayTeam,place,category,date,description,price,image) VALUES(1,'css','ess','sfax','championship','12/01/2020','championship',17,'https://content.mosaiquefm.net/uploads/content/thumbnails/ess_ca_1513453495.jpg');
 INSERT INTO seats(id,number,type,availability,userid,matchid) VALUES(1,101,'pelouse','true',null,1);
 INSERT INTO seats(id,number,type,availability,userid,matchid) VALUES(2,101,'enceinte','false',1,1);
 INSERT INTO thirdp(id,identifier,password) VALUES(1,'00002','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u');
-INSERT INTO weekCodes(id,codes) VALUES(1,'123456');
+INSERT INTO weekCodes(id,codes) VALUES(1,'Rbk6');
 INSERT INTO admins(id,firstName,lastName,email,password) VALUES(1,'Elyes','Ferjani','elyes@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u');
 INSERT INTO admins(id,firstName,lastName,email,password) VALUES(2,'Omar','Chaouachi','omar@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u');
+INSERT INTO admins(id,firstName,lastName,email,password) VALUES(3,'Ali','Smaoui','ali@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u');
+INSERT INTO admins(id,firstName,lastName,email,password) VALUES(4,'Skander','Bromdhan','skander@rbk.com','$2b$10$beYHqloL2DWfegZfkBNazuzQJDHT1PX/l.y94Fa60mF4TcSR7CR1u');
 INSERT INTO messages(id,message) VALUES(1,'Welcome to admins platform');
 
