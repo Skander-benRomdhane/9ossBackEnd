@@ -4,6 +4,8 @@ const router = express.Router();
 const qr = require("qrcode");
 const paypal = require('paypal-rest-sdk')
 const moment = require('moment')
+const mail = require('../Users/email.js');
+
 
 // here the verification of paypal will happen
 router.get('/success', (req, res) => {
@@ -30,6 +32,7 @@ router.get('/success', (req, res) => {
 
 // waiting for confirmation from paypall then running the qr generator 
 router.post("/pay", async (req, res) => {
+    console.log(req.body)
     var possible = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f", "g", "h", "e", "j", "k", "m", "n", "o", "l", "y", "x", "z"]
     var newCode = '';
     // const a = await payment(req,res)
@@ -51,10 +54,13 @@ router.post("/pay", async (req, res) => {
             newCode = onePossibility
             db.addNewCode(newCode)
             db.addPurchase(newCode, date, req.body.price, req.body.phoneNumber)
+            mail.sendCode(newCode, req.body.email)
         }
     }
     generateCode()
     console.log(newCode)
+    // update seat availability
+    await db.updateSeat(req.body.seatNumber, req.body.numberPhone)
     await qr.toDataURL(newCode, (err, src) => {
         if (err) res.send("Error occured");
         res.json({src})
@@ -115,11 +121,10 @@ const payment = (req, res) => {
 // get the purchase's history 
 
 router.post('/history', async (req, res) => {
-    const phone = req.body.numberPhone;
+    const phone = req.body.numberPhone || '11111'
     var counter = 0;
     const history = await db.getAllPurchases(phone)
      await history.map(info => {
-
          qr.toDataURL(info.code)
          .then(src =>{
              info.code = src
