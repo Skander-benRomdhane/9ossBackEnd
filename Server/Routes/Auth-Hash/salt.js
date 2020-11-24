@@ -8,3 +8,7 @@ function genSalt() {
   return bcrypt.genSalt(10)
 }
 
+module.exports={
+  genSalt
+}
+
